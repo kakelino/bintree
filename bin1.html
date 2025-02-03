@@ -149,17 +149,22 @@
     }
 
     // Insert nodes and visualize
-    insertAndVisualize(10);
-    insertAndVisualize(5);
-    insertAndVisualize(15);
-    insertAndVisualize(3);
-    insertAndVisualize(7);
-    insertAndVisualize(13);
-    insertAndVisualize(18);
+    const myTimeout1 = setTimeout(insertAndVisualize(10), 1000);
+     const myTimeout2 = setTimeout(insertAndVisualize(5), 1000);
+     const myTimeout3 = setTimeout(insertAndVisualize(15), 1000);
+//  insertAndVisualize(10);
+//    insertAndVisualize(5);
+//    insertAndVisualize(15);
+  //  insertAndVisualize(3);
+ //   insertAndVisualize(7);
+//    insertAndVisualize(13);
+ //   insertAndVisualize(18);
+
+  
 
     // Print preorder and inorder traversals
-    console.log("Preorder Traversal:", bst.preorder().join(', '));
-    console.log("Inorder Traversal:", bst.inorder().join(', '));
+  //  console.log("Preorder Traversal:", bst.preorder().join(', '));
+  //  console.log("Inorder Traversal:", bst.inorder().join(', '));
   </script>
 </body>
 </html>
