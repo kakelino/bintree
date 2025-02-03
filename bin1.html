@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary Search Tree Visualization</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .node {
+      cursor: pointer;
+    }
+
+    .link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 2px;
+    }
+
+    .node text {
+      font-size: 14px;
+      font-weight: bold;
+      text-anchor: middle;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Binary Search Tree Visualization</h1>
+  <div id="bst-container"></div>
+
+  <script>
+    // Node class for Binary Search Tree
+    class Node {
+      constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+      }
+    }
+
+    class BinarySearchTree {
+      constructor() {
+        this.root = null;
+      }
+
+      // Insert a new value into the tree
+      insert(value) {
+        const newNode = new Node(value);
+        if (this.root === null) {
+          this.root = newNode;
+        } else {
+          this.insertNode(this.root, newNode);
+        }
+      }
+
+      insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+          if (node.left === null) {
+            node.left = newNode;
+          } else {
+            this.insertNode(node.left, newNode);
+          }
+        } else {
+          if (node.right === null) {
+            node.right = newNode;
+          } else {
+            this.insertNode(node.right, newNode);
+          }
+        }
+      }
+
+      // Preorder traversal (root, left, right)
+      preorder(node = this.root, result = []) {
+        if (node) {
+          result.push(node.value);
+          this.preorder(node.left, result);
+          this.preorder(node.right, result);
+        }
+        return result;
+      }
+
+      // Inorder traversal (left, root, right)
+      inorder(node = this.root, result = []) {
+        if (node) {
+          this.inorder(node.left, result);
+          result.push(node.value);
+          this.inorder(node.right, result);
+        }
+        return result;
+      }
+    }
+
+    // Create the BST and D3.js tree visualization
+    const bst = new BinarySearchTree();
+    const width = 600;
+    const height = 400;
+
+    const svg = d3.select('#bst-container')
+                  .append('svg')
+                  .attr('width', width)
+                  .attr('height', height);
+
+    let rootNode = null;
+
+    function updateTree() {
+      const treeLayout = d3.tree().size([width - 20, height - 20]);
+
+      const nodes = d3.hierarchy(rootNode);
+      const treeData = treeLayout(nodes);
+
+      // Links
+      const links = svg.selectAll('.link')
+                       .data(treeData.links())
+                       .enter()
+                       .append('line')
+                       .attr('class', 'link')
+                       .attr('x1', d => d.source.x + 10)
+                       .attr('y1', d => d.source.y + 10)
+                       .attr('x2', d => d.target.x + 10)
+                       .attr('y2', d => d.target.y + 10);
+
+      // Nodes
+      const node = svg.selectAll('.node')
+                      .data(treeData.descendants())
+                      .enter()
+                      .append('g')
+                      .attr('class', 'node')
+                      .attr('transform', d => `translate(${d.x + 10}, ${d.y + 10})`);
+
+      node.append('circle')
+          .attr('r', 20)
+          .attr('fill', '#ffcc00');
+
+      node.append('text')
+          .text(d => d.data.value)
+          .attr('dy', 5);
+    }
+
+    // Simulate the insertion and visualization
+    function insertAndVisualize(value) {
+      bst.insert(value);
+      rootNode = bst.root;
+      svg.selectAll('*').remove();  // Clear previous visualization
+      updateTree();
+    }
+
+    // Insert nodes and visualize
+    insertAndVisualize(10);
+    insertAndVisualize(5);
+    insertAndVisualize(15);
+    insertAndVisualize(3);
+    insertAndVisualize(7);
+    insertAndVisualize(13);
+    insertAndVisualize(18);
+
+    // Print preorder and inorder traversals
+    console.log("Preorder Traversal:", bst.preorder().join(', '));
+    console.log("Inorder Traversal:", bst.inorder().join(', '));
+  </script>
+</body>
+</html>
